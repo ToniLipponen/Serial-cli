@@ -1,5 +1,5 @@
-pkgname="Serial-cli-git"
-_pkgname="Serial-cli"
+pkgname="serial-cli-git"
+_pkgname="serial-cli"
 pkgver=1.0.0.r0.60c08d8
 pkgrel=1
 pkgdesc="serial app"
