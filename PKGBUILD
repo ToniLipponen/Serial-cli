@@ -14,6 +14,14 @@ source=("${_pkgname}::git+https://github.com/ToniLipponen/Serial-cli.git")
 sha512sums=("SKIP")
 provides=(serial-cli)
 
+pkgver() {
+  cd "$_pkgname"
+  ( set -o pipefail
+    git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
 build() {
 	cd "${srcdir}/${_pkgname}"
 	make build
@@ -21,10 +29,6 @@ build() {
 
 package() {
 	cd "${srcdir}/${_pkgname}"
-	echo pkgdir: $pkgdir
-	echo srcdir: $srcdir
-	pwd
-	ls
 	make install DESTDIR="$pkgdir" PREFIX="/usr"
 	install -Dm644 LICENSE -t "${pkgdir}/usr/share/licenses/${_pkgname}"
 }
