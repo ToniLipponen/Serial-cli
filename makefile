@@ -6,7 +6,8 @@ build:
 	$(CC) $(CFLAGS) main.cpp -o serial-cli
 
 install:
-	cp ./serial-cli ${PREFIX}/bin/serial-cli
+	mkdir -p $(DESTDIR)$(PREFIX)/bin/
+	cp ./serial-cli $(DESTDIR)$(PREFIX)/bin/serial-cli
 
 uninstall:
 	rm -f $(PREFIX)/bin/serial-cli
