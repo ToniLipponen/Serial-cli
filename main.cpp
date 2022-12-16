@@ -110,6 +110,12 @@ int main(int argc, char** argv)
             do
             {
                 readBytes = read(device, readBuffer, sizeof(readBuffer));
+
+                if(readBytes < 0)
+                {
+                    break;
+                }
+                
                 content.append(readBuffer, readBytes);
             }while(readBytes);
 
