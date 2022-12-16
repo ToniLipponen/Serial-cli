@@ -49,7 +49,7 @@ int intToBaudRate(int arg)
     }
 
     std::cerr << "Invalid baud rate" << std::endl;
-    exit(3);
+    exit(2);
 }
 
 void printHelp()
@@ -78,13 +78,13 @@ int main(int argc, char** argv)
     if(device == -1)
     {
         std::cerr << "Failed to open device: " << argv[1] << std::endl;
-        return 1;
+        return 3;
     }
 
     struct termios tty;
 
     if(tcgetattr(device, &tty) != 0) {
-        return 2;
+        return 4;
     }
 
     cfmakeraw(&tty);
@@ -98,17 +98,25 @@ int main(int argc, char** argv)
     
     std::thread readThread([&]()
     {
+        std::string content;
+
         while(!shouldExit)
         {
+            content.clear();
             mutex.lock();
-            char readBuffer[1 << 16]{0};
+            char readBuffer[1 << 10]{0};
             
-            int readBytes = read(device, readBuffer, sizeof(readBuffer));
+            int readBytes = 0;
+            do
+            {
+                readBytes = read(device, readBuffer, sizeof(readBuffer));
+                content.append(readBuffer, readBytes);
+            }while(readBytes);
 
             mutex.unlock();
 
             if(readBytes)
-                std::cout << readBuffer;
+                std::cout << content;
 
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
@@ -132,7 +140,7 @@ int main(int argc, char** argv)
             mutex.lock();
             while(sent != sendBuffer.size())
             {
-                sent = write(device, sendBuffer.c_str() + sent, sendBuffer.size() - sent);
+                sent += write(device, sendBuffer.c_str() + sent, sendBuffer.size() - sent);
             }
             mutex.unlock();
 
