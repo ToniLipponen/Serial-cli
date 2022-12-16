@@ -1,9 +1,10 @@
-CC = g++
+CC = gcc
+CXX = g++
 CFLAGS = -Wall -g
 PREFIX = /usr/local
 
 build:
-	$(CC) $(CFLAGS) main.cpp -o serial-cli
+	$(CXX) $(CFLAGS) main.cpp -o serial-cli
 
 install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin/
