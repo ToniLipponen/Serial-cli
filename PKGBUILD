@@ -1,6 +1,6 @@
 pkgname="serial-cli-git"
 _pkgname="serial-cli"
-pkgver=1.0.0.r0.60c08d8
+pkgver=r12.7fb4785
 pkgrel=1
 pkgdesc="serial app"
 arch=('x86_64' 'x86')
@@ -9,22 +9,20 @@ license=('MIT')
 makedepends=(
 	'git'
 	'gcc'
+	'make'
 )
 source=("${_pkgname}::git+https://github.com/ToniLipponen/Serial-cli.git")
 sha512sums=("SKIP")
-provides=(serial-cli)
+provides=("serial-cli")
 
 pkgver() {
   cd "$_pkgname"
-  ( set -o pipefail
-    git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
-    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-  )
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 build() {
 	cd "${srcdir}/${_pkgname}"
-	make build
+	make CC=gcc CXX=g++ build
 }
 
 package() {
